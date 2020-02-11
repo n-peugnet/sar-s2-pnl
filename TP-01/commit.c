@@ -25,7 +25,9 @@ struct commit *new_commit(unsigned short major, unsigned long minor,
 	c->version.minor = minor;
 	c->version.flags = 0;
 	c->comment = comment;
-	INIT_LIST_HEAD(&c->head);
+	c->major_parent = c;
+	INIT_LIST_HEAD(&c->minor_head);
+	INIT_LIST_HEAD(&c->major_head);
 	return c;
 }
 
@@ -40,7 +42,9 @@ struct commit *new_commit(unsigned short major, unsigned long minor,
   */
 static struct commit *insert_commit(struct commit *from, struct commit *new)
 {
-	list_add(&new->head, &from->head);
+	list_add(&new->minor_head, &from->minor_head);
+	if (new->major_parent == new)
+		list_add(&new->major_head, &from->major_parent->major_head);
 	return new;
 }
 
@@ -60,6 +64,7 @@ struct commit *add_minor_commit(struct commit *from, char *comment)
 		from->version.minor + 1,
 		comment
 	);
+	new->major_parent = from->major_parent;
 	return insert_commit(from, new);
 }
 
@@ -91,7 +96,7 @@ struct commit *add_major_commit(struct commit *from, char *comment)
   */
 struct commit *del_commit(struct commit *victim)
 {
-	list_del(&victim->head);
+	list_del(&victim->minor_head);
 	return victim;
 }
 

@@ -25,7 +25,8 @@ struct history *new_history(char *name)
   */
 struct commit *last_commit(struct history *h)
 {
-	return list_last_entry(&h->commit_list->head, struct commit, head);
+	return list_last_entry(&h->commit_list->minor_head, struct commit,
+			       minor_head);
 }
 
 /**
@@ -40,7 +41,7 @@ void display_history(struct history *h)
 	struct commit *commit;
 
 	printf("\nHistorique de '%s' :\n", h->name);
-	list_for_each_entry(commit, &h->commit_list->head, head) {
+	list_for_each_entry(commit, &h->commit_list->minor_head, minor_head) {
 		display_commit(commit);
 	}
 }
@@ -54,13 +55,24 @@ void display_history(struct history *h)
   */
 void infos(struct history *h, int major, unsigned long minor)
 {
-	struct commit *commit;
+	struct commit *commit_maj;
+	struct commit *commit_min;
 
-	list_for_each_entry(commit, &h->commit_list->head, head) {
-		if (commit->version.major == major &&
-		    commit->version.minor == minor) {
-			display_commit(commit);
-			return;
+	list_for_each_entry(commit_maj, &h->commit_list->major_head,
+			    major_head) {
+		if (commit_maj->version.major < major)
+			continue;
+		if (commit_maj->version.major > major)
+			break;
+		if (commit_maj->version.minor == minor)
+			return display_commit(commit_maj);
+		list_for_each_entry(commit_min, &commit_maj->minor_head,
+				    minor_head) {
+			if (commit_min->version.minor < minor)
+				continue;
+			if (commit_min->version.minor > minor)
+				break;
+			return display_commit(commit_min);
 		}
 	}
 	printf("Not here !!!");

@@ -18,7 +18,7 @@ int main(int argc, char const *argv[])
 	last = add_minor_commit(victim, "Work 4");
 	display_history(history);
 
-	del_commit(victim);
+	/* del_commit(victim); */
 	display_history(history);
 
 	tmp = add_major_commit(last, "Realse 1");
@@ -31,8 +31,8 @@ int main(int argc, char const *argv[])
 	add_minor_commit(last, "Oversight !!!");
 	display_history(history);
 
-	printf("Recherche du commit 1.2 :   ");
-	infos(history, 1, 2);
+	printf("Recherche du commit 1.0 :   ");
+	infos(history, 1, 0);
 	printf("\n");
 
 	printf("Recherche du commit 1.7 :   ");
