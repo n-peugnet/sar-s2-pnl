@@ -1,0 +1,6 @@
+*.o
+test*
+!test*.c
+
+# IDEs
+.vscode
