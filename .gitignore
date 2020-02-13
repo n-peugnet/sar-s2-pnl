@@ -1,6 +1,7 @@
 *.o
 test*
 !test*.c
+*.img
 
 # IDEs
 .vscode
