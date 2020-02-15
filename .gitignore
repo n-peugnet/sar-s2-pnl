@@ -2,6 +2,9 @@
 test*
 !test*.c
 *.img
+/linux-*
+init
+*.cpio.gz
 
 # IDEs
 .vscode

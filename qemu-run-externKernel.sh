@@ -3,10 +3,12 @@
 # Fixer les variables avec les chemins de vos fichiers
 HDA="-drive file=pnl-tp.img,format=raw"
 HDB="-drive file=myHome.img,format=raw"
-KERNEL=linux-4.19/arch/x86/boot/bzImage
+KERNEL=linux-4.19.3/arch/x86/boot/bzImage
 
 # Linux kernel options
-CMDLINE="root=/dev/sda1 rw console=ttyS0 kgdboc=ttyS1 "
+CMDLINE="root=/dev/sda1 rw console=ttyS0"
+CMDLINE="$CMDLINE kgdboc=ttyS1"
+# CMDLINE="$CMDLINE init=bin/bash"
 
 FLAGS="--enable-kvm "
 
@@ -16,5 +18,5 @@ exec qemu-system-x86_64 ${FLAGS} \
      -serial mon:stdio \
      -serial tcp::1234,server,nowait \
      -boot c -m 2G \
-     -kernel "${KERNEL}" -append "${CMDLINE}"
+     -kernel "${KERNEL}" -initrd my_initramfs.cpio.gz -append "${CMDLINE}"
 
