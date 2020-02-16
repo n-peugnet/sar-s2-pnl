@@ -18,7 +18,8 @@ int main(int argc, char const *argv[])
 	last = add_minor_commit(victim, "Work 4");
 	display_history(history);
 
-	/* del_commit(victim); */
+	del_commit(victim);
+	free(victim);
 	display_history(history);
 
 	tmp = add_major_commit(last, "Realse 1");
@@ -43,5 +44,7 @@ int main(int argc, char const *argv[])
 	infos(history, 4, 2);
 	printf("\n");
 
+	freeHistory(history->commit_list);
+	free(history);
 	return 0;
 }

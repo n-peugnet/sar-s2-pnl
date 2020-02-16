@@ -17,4 +17,6 @@ void display_history(struct history *from);
 
 void infos(struct history *h, int major, unsigned long minor);
 
+void freeHistory(struct commit *from);
+
 #endif

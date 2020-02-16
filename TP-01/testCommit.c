@@ -17,5 +17,7 @@ int main(int argc, char const *argv[])
 	c = add_minor_commit(c, "test 6");
 	c = add_minor_commit(c, "test 7");
 	display_history(h);
+	freeHistory(h->commit_list);
+	free(h);
 	exit(0);
 }

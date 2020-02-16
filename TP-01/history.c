@@ -77,3 +77,19 @@ void infos(struct history *h, int major, unsigned long minor)
 	}
 	printf("Not here !!!");
 }
+
+/**
+ * freeHistory - Libère la memoire occupée par l'history.
+ *
+ * @from: le commit à partir duquel on veut libérer l'historique.
+ */
+void freeHistory(struct commit *from)
+{
+	struct commit *commit;
+	struct commit *tmp;
+
+	list_for_each_entry_safe(commit, tmp, &from->minor_head, minor_head) {
+		free(commit);
+	}
+	free(commit);
+}
