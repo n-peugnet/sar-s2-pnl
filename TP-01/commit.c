@@ -25,6 +25,7 @@ struct commit *new_commit(unsigned short major, unsigned long minor,
 	c->version.minor = minor;
 	c->version.flags = 0;
 	c->comment = comment;
+	c->display = display_major_commit;
 	c->major_parent = c;
 	INIT_LIST_HEAD(&c->minor_head);
 	INIT_LIST_HEAD(&c->major_head);
@@ -64,6 +65,7 @@ struct commit *add_minor_commit(struct commit *from, char *comment)
 		from->version.minor + 1,
 		comment
 	);
+	new->display = display_commit;
 	new->major_parent = from->major_parent;
 	return insert_commit(from, new);
 }
@@ -110,6 +112,17 @@ void display_commit(struct commit *c)
 	printf("%3lu: ", c->id);
 	display_version(&c->version, is_unstable_bis);
 	printf("'%s'\n", c->comment);
+}
+
+/**
+ * display_major_commit - fonction d'affichage spécifique à un commit majeur.
+ *
+ * @c: commit qui sera affiché.
+ */
+void display_major_commit(struct commit *c)
+{
+	printf("%3lu:  ### version %d : '%s' ####\n",
+	       c->id, c->version.major, c->comment);
 }
 
 /**

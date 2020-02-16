@@ -42,7 +42,7 @@ void display_history(struct history *h)
 
 	printf("\nHistorique de '%s' :\n", h->name);
 	list_for_each_entry(commit, &h->commit_list->minor_head, minor_head) {
-		display_commit(commit);
+		commit->display(commit);
 	}
 }
 
