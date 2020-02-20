@@ -1,10 +1,16 @@
 #! /bin/bash
 
+if [ -z $1 ]
+then
+	echo "usage: ./qemu-run-externKernel-virtfs.sh <shared-folder>"
+	exit 1
+fi
+
 # Fixer les variables avec les chemins de vos fichiers
 HDA="-drive file=pnl-tp.img,format=raw"
 HDB="-drive file=myHome.img,format=raw"
-SHARED=./share/
-KERNEL=linux-4.19/arch/x86/boot/bzImage
+SHARED=$1
+KERNEL=linux/arch/x86/boot/bzImage
 
 # Linux kernel options
 CMDLINE="root=/dev/sda1 rw console=ttyS0 kgdboc=ttyS1 "

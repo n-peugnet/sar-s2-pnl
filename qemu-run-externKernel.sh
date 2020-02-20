@@ -3,7 +3,7 @@
 # Fixer les variables avec les chemins de vos fichiers
 HDA="-drive file=pnl-tp.img,format=raw"
 HDB="-drive file=myHome.img,format=raw"
-KERNEL=linux-4.19.3/arch/x86/boot/bzImage
+KERNEL=linux/arch/x86/boot/bzImage
 
 # Linux kernel options
 CMDLINE="root=/dev/sda1 rw console=ttyS0"

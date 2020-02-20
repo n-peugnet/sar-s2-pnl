@@ -15,7 +15,6 @@ test*
 
 # Cpio img
 *.img
-/linux-*
 init
 *.cpio.gz
 
