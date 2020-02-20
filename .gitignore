@@ -1,6 +1,19 @@
+# Compiled sources
 *.o
+
+# Module files
+*.cmd
+*.ko
+*.mod
+*.mod.c
+*.symvers
+*.order
+
+# compiled test executables
 test*
 !test*.c
+
+# Cpio img
 *.img
 /linux-*
 init
@@ -8,3 +21,4 @@ init
 
 # IDEs
 .vscode
+
