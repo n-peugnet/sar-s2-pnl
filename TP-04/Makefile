@@ -2,7 +2,7 @@
 KERNELDIR_PNL ?= ../linux
 PWD := $(shell pwd)
 
-obj-m += helloWorld.o helloWorldParam.o uname.o
+obj-m += helloWorld.o helloWorldParam.o uname.o show_sb.o
 
 all :
 	make -C $(KERNELDIR_PNL) M=$(PWD) modules
