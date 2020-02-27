@@ -6,7 +6,7 @@ HDB="-drive file=myHome.img,format=raw"
 KERNEL=linux/arch/x86/boot/bzImage
 
 # Linux kernel options
-CMDLINE="root=/dev/sda1 rw console=ttyS0"
+CMDLINE="root=/dev/sda1 rw console=ttyS0 kgdbwait"
 CMDLINE="$CMDLINE kgdboc=ttyS1"
 # CMDLINE="$CMDLINE init=bin/bash"
 

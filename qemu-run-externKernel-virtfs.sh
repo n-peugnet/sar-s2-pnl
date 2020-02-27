@@ -13,7 +13,7 @@ SHARED=$1
 KERNEL=linux/arch/x86/boot/bzImage
 
 # Linux kernel options
-CMDLINE="root=/dev/sda1 rw console=ttyS0 kgdboc=ttyS1 "
+CMDLINE="root=/dev/sda1 rw console=ttyS0 kgdboc=ttyS1 kgdbwait"
 
 FLAGS="--enable-kvm "
 VIRTFS+=" --virtfs local,path=${SHARED},mount_tag=share,security_model=passthrough,id=share "

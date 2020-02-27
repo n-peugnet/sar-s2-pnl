@@ -2,7 +2,7 @@
 
 obj-m += kcpustat.o
 
-KERNELDIR_PNL ?= ../../../linux-4.19
+KERNELDIR_PNL ?=../../linux
 PWD := $(shell pwd)
 
 all :
