@@ -10,7 +10,7 @@ MODULE_LICENSE("GPL");
 static char name[NAME_LENGTH];
 
 static ssize_t hello_show(struct kobject *kobj, struct kobj_attribute *attr,
-		      char *buf)
+			  char *buf)
 {
 	return sprintf(buf, "Hello %s!\n", name);
 }
