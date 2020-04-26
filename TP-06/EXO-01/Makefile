@@ -1,6 +1,6 @@
 obj-m += hellosysfs.o
 
-KERNELDIR_PNL ?= ../linux
+KERNELDIR_PNL ?= ../../linux
 PWD := $(shell pwd)
 
 all :

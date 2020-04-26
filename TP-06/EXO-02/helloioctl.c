@@ -1,6 +1,7 @@
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/fs.h>
+#include <linux/uaccess.h>
 #include "helloioctl.h"
 
 MODULE_DESCRIPTION("A kernel module to try the ioctl");
@@ -8,18 +9,38 @@ MODULE_AUTHOR("Nicolas Peugnet <n.peugnet@free.fr>");
 MODULE_LICENSE("GPL");
 
 static int major;
-static const struct file_operations fops = {};
+static char buf[SIZE_MSG];
+
+static long hello_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+{
+	size_t not_copied;
+
+	switch (cmd) {
+	case HELLO:
+		strncpy(buf, "Hello ioctl!", 12);
+		pr_info("HELLO cmd");
+		not_copied = copy_to_user((char *)arg, buf, SIZE_MSG);
+		break;
+	default:
+		return -ENOTTY;
+	}
+	return not_copied;
+}
+
+static const struct file_operations fops = {
+	.unlocked_ioctl = hello_ioctl
+};
 
 static int helloioctl_init(void)
 {
-	major = register_chrdev(0, NAME, &fops);
+	major = register_chrdev(0, DEV_NAME, &fops);
 	pr_info("helloioctl module loaded with major %d\n", major);
 	return 0;
 }
 
 static void helloioctl_exit(void)
 {
-	unregister_chrdev(major, NAME);
+	unregister_chrdev(major, DEV_NAME);
 	pr_info("helloioctl module unloaded\n");
 }
 
