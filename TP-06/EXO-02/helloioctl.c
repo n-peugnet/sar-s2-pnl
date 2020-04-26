@@ -9,6 +9,7 @@ MODULE_AUTHOR("Nicolas Peugnet <n.peugnet@free.fr>");
 MODULE_LICENSE("GPL");
 
 static int major;
+static char who[SIZE_WHO] = "ioctl";
 static char buf[SIZE_MSG];
 
 static long hello_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
@@ -17,9 +18,13 @@ static long hello_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 
 	switch (cmd) {
 	case HELLO:
-		strncpy(buf, "Hello ioctl!", 12);
 		pr_info("HELLO cmd");
+		sprintf(buf, "Hello %s!\n", who);
 		not_copied = copy_to_user((char *)arg, buf, SIZE_MSG);
+		break;
+	case WHO:
+		pr_info("WHO cmd");
+		not_copied = copy_from_user(who, (char *)arg, SIZE_WHO);
 		break;
 	default:
 		return -ENOTTY;

@@ -9,6 +9,8 @@ all: hello_user
 
 clean:
 	make -C $(KERNELDIR_PNL) M=$(PWD) clean
+	rm *.o
+	rm hello_user
 
 mknod:
 	mknod /dev/hello c $(MAJOR) 0

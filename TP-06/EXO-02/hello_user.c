@@ -15,6 +15,8 @@ int main(void)
 		perror("open");
 		return -1;
 	}
+	ret = ioctl(fd, WHO, "beer");
+
 	ret = ioctl(fd, HELLO, buf);
 	printf("return: %d, buf: %s\n", ret, buf);
 }
