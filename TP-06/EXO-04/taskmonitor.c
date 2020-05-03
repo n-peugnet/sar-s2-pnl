@@ -11,19 +11,29 @@ MODULE_LICENSE("GPL");
 static pid_t target;
 module_param(target, int, 0660);
 
+struct task_monitor {
+	struct pid *pid;
+};
+
+static struct task_monitor task_monitor;
+
+static void put_current_pid(void)
+{
+	if (task_monitor.pid != NULL)
+		put_pid(task_monitor.pid);
+}
+
 static int monitor_pid(pid_t pid)
 {
 	struct pid *s_pid;
 	int ret = 0;
 
+	put_current_pid();
 	s_pid = find_get_pid(pid);
-	if (s_pid == NULL) {
-		ret = -1;
-		goto monitor_pid_destructor;
-	}
+	if (s_pid == NULL)
+		return -1;
+	task_monitor.pid = s_pid;
 	pr_info("pid_t: %d, pid->level: %d\n", pid, s_pid->level);
-monitor_pid_destructor:
-	put_pid(s_pid);
 	return ret;
 }
 
@@ -53,6 +63,7 @@ static int taskmonitor_init(void)
 static void taskmonitor_exit(void)
 {
 	sysfs_remove_file(kernel_kobj, &hello_kobj.attr);
+	put_current_pid();
 	pr_info("taskmonitor module unloaded\n");
 }
 
