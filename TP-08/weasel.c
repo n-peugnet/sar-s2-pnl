@@ -1,4 +1,5 @@
 #include <linux/module.h>
+#include <linux/seq_file.h>
 #include <linux/proc_fs.h>
 #include <linux/kernel.h>
 #include <linux/dcache.h>
@@ -9,10 +10,14 @@ MODULE_AUTHOR("Nicolas Peugnet <n.peugnet@free.fr>");
 MODULE_LICENSE("GPL");
 
 #define MODULE_NAME "weasel"
-#define WHOAMI "whoami"
+#define FILE_WHOAMI "whoami"
+#define FILE_LIST "list"
 
-static struct proc_dir_entry *proc_parent;
-static struct proc_dir_entry *proc_file;
+static struct proc_dir_entry *parent;
+static struct proc_dir_entry *file_whoami;
+static struct proc_dir_entry *file_list;
+
+/*********************** whoami *******************************/
 
 static ssize_t whoami_read(struct file *f, char *buf, size_t len, loff_t *off)
 {
@@ -21,10 +26,12 @@ static ssize_t whoami_read(struct file *f, char *buf, size_t len, loff_t *off)
 	return simple_read_from_buffer(buf, len, off, text, 16);
 }
 
-static const struct file_operations proc_file_fops = {
+static const struct file_operations file_whoami_fops = {
 	.owner = THIS_MODULE,
 	.read = whoami_read,
 };
+
+/************************** functions *****************************/
 
 static void print_dentry_info(void)
 {
@@ -46,13 +53,54 @@ static void print_dentry_info(void)
 	pr_info("count=%d\n", count);
 }
 
+static void seq_print_dentries(struct seq_file *s)
+{
+	int size = 1 << d_hash_shift;
+	struct hlist_bl_node *node;
+	struct dentry *dentry;
+	struct hlist_bl_head *i;
+
+	for (i = dentry_hashtable; i < dentry_hashtable + size; i++) {
+		hlist_bl_for_each_entry_rcu(dentry, node, i, d_hash) {
+			seq_dentry(s, dentry, "");
+			seq_puts(s, "\n");
+		}
+	}
+}
+
+/************************* list *****************************/
+
+static int list_seq_show(struct seq_file *s, void *v)
+{
+	seq_print_dentries(s);
+	return 0;
+}
+
+static int list_open(struct inode *inode, struct file *file)
+{
+	return single_open(file, list_seq_show, file->private_data);
+}
+
+static const struct file_operations file_list_fops = {
+	.owner   = THIS_MODULE,
+	.open    = list_open,
+	.read    = seq_read,
+	.llseek  = seq_lseek,
+	.release = single_release,
+};
+
+/**************************** init ***************************/
+
 static int __init weasel_init(void)
 {
-	proc_parent = proc_mkdir(MODULE_NAME, NULL);
-	proc_file = proc_create(WHOAMI, 0444, proc_parent, &proc_file_fops);
+	parent = proc_mkdir(MODULE_NAME, NULL);
+	file_whoami = proc_create(FILE_WHOAMI, 0444, parent, &file_whoami_fops);
+	file_list = proc_create(FILE_LIST, 0444, parent, &file_list_fops);
 	print_dentry_info();
 	return 0;
 }
+
+/**************************** exit ****************************/
 
 static void __exit weasel_exit(void)
 {
